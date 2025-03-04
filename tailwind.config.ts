@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,6 +64,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+				display: ['Playfair Display', 'serif'],
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -70,25 +75,49 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'glitch-horizontal': {
+					'0%': { transform: 'translateX(-2px)' },
+					'25%': { transform: 'translateX(2px)' },
+					'50%': { transform: 'translateX(-2px)' },
+					'75%': { transform: 'translateX(2px)' },
+					'100%': { transform: 'translateX(-2px)' }
+				},
+				'glitch-vertical': {
+					'0%': { transform: 'translateY(-2px)' },
+					'25%': { transform: 'translateY(2px)' },
+					'50%': { transform: 'translateY(-2px)' },
+					'75%': { transform: 'translateY(2px)' },
+					'100%': { transform: 'translateY(-2px)' }
+				},
+				'float': {
+					'0%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' },
+					'100%': { transform: 'translateY(0)' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'rotate-slow': {
+					'0%': { transform: 'rotate(0deg)' },
+					'100%': { transform: 'rotate(360deg)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'glitch-h': 'glitch-horizontal 0.2s ease-in-out infinite',
+				'glitch-v': 'glitch-vertical 0.2s ease-in-out infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'rotate-slow': 'rotate-slow 20s linear infinite'
 			}
 		}
 	},

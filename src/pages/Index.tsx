@@ -8,14 +8,17 @@ import GlitchEffect from "@/components/GlitchEffect";
 import TypographyRoom from "@/components/TypographyRoom";
 
 const Index = () => {
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  // Default test image from Unsplash
+  const defaultImage = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b";
+  
+  const [uploadedImage, setUploadedImage] = useState<string | null>(defaultImage);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [effectGenerated, setEffectGenerated] = useState(false);
+  const [effectGenerated, setEffectGenerated] = useState(true); // Set to true to show effects immediately
   const [customText, setCustomText] = useState("ONE MORE ONE MORE ONE MORE ONE MORE");
 
   const handleImageUpload = (imageUrl: string) => {
     setUploadedImage(imageUrl);
-    setEffectGenerated(false);
+    setEffectGenerated(true);
     toast.success("Image uploaded successfully!");
   };
 

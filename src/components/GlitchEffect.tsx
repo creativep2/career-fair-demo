@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from "react";
 
 interface GlitchEffectProps {
@@ -76,35 +77,33 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
       }
 
       if (dotsGenerated && containerRef.current) {
-        const dots = containerRef.current.querySelectorAll('.floating-dot');
-        dots.forEach((dot) => {
-          const dotElement = dot as HTMLElement;
-          const time = Date.now() / 1000;
-          const offsetX = Math.sin(time * parseFloat(dotElement.dataset.speed || "1")) * 5;
-          const offsetY = Math.cos(time * parseFloat(dotElement.dataset.speed || "1")) * 5;
-          
-          dotElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        });
-
-        const rects = containerRef.current.querySelectorAll('.floating-rect');
-        rects.forEach((rect) => {
-          const rectElement = rect as HTMLElement;
-          const time = Date.now() / 1000;
-          const offsetX = Math.sin(time * parseFloat(rectElement.dataset.speed || "1")) * 3;
-          const offsetY = Math.cos(time * parseFloat(rectElement.dataset.speed || "1")) * 3;
-          
-          rectElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        });
-
+        // Color transition animation for matrix tiles
         const tiles = containerRef.current.querySelectorAll('.matrix-tile');
         tiles.forEach((tile) => {
           const tileElement = tile as HTMLElement;
           const time = Date.now() / 1000;
-          const speed = parseFloat(tileElement.dataset.speed || "1");
-          const offsetX = Math.sin(time * speed) * 2;
-          const offsetY = Math.cos(time * speed) * 2;
           
+          // Random movement
+          const speed = parseFloat(tileElement.dataset.speed || "1");
+          const offsetX = Math.sin(time * speed) * 5;
+          const offsetY = Math.cos(time * speed) * 5;
           tileElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+          
+          // Random color switching
+          if (Math.random() > 0.995) {
+            // Change color randomly between red, blue and white
+            const colorOptions = ['#ea384c', '#1EAEDB', '#FFFFFF'];
+            const newColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+            tileElement.style.backgroundColor = newColor;
+            
+            // Add a subtle flash effect
+            tileElement.style.opacity = "0.6";
+            setTimeout(() => {
+              if (tileElement) {
+                tileElement.style.opacity = (0.1 + Math.random() * 0.3).toString();
+              }
+            }, 150);
+          }
         });
       }
       
@@ -122,15 +121,15 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
     if (!containerRef.current) return;
 
     const colors = [
-      '#ff0000', '#ff5252', // Primary reds
-      '#2196f3', '#90caf9', // Primary blues
-      '#e0e0e0', '#bdbdbd', // Neutral grays
-      '#00c853', '#b2ff59', // Accent greens
+      '#ea384c', // Red
+      '#1EAEDB', // Blue
+      '#FFFFFF', // White
     ];
 
-    const rows = 6;
-    const cols = 6;
-    const tileSize = 60; // Larger tiles
+    // Use a 10x10 grid
+    const rows = 10;
+    const cols = 10;
+    const tileSize = 40; // Smaller tiles for more rectangles
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -139,22 +138,25 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
         const posX = (col / cols) * 100;
         const posY = (row / rows) * 100;
         const zIndex = Math.random() > 0.5 ? 1 : -1;
-        const speed = 0.2 + Math.random() * 0.4; // Slower, more subtle movement
+        const speed = 0.2 + Math.random() * 0.8; // Varied speed for more random movement
         
-        tile.className = 'absolute matrix-tile';
+        tile.className = 'absolute matrix-tile transition-all duration-300';
         tile.style.width = `${tileSize}px`;
         tile.style.height = `${tileSize}px`;
         tile.style.backgroundColor = color;
         tile.style.left = `${posX}%`;
         tile.style.top = `${posY}%`;
         tile.style.zIndex = `${zIndex}`;
-        tile.style.opacity = (0.1 + Math.random() * 0.3).toString(); // Lower opacity
-        tile.style.mixBlendMode = 'multiply';
-        tile.style.transition = 'transform 0.5s ease-out';
+        tile.style.opacity = (0.1 + Math.random() * 0.3).toString();
+        tile.style.mixBlendMode = 'screen';
         tile.dataset.speed = speed.toString();
         
-        const isCenterX = col >= cols/3 && col < (cols*2)/3;
-        const isCenterY = row >= rows/3 && row < (rows*2)/3;
+        // Create a center empty space for the image
+        // Consider center to be the middle 40% of width and height
+        const isCenterX = col >= cols * 0.3 && col < cols * 0.7;
+        const isCenterY = row >= rows * 0.3 && row < rows * 0.7;
+        
+        // Only add tiles that are not in the center area
         if (!(isCenterX && isCenterY)) {
           containerRef.current.appendChild(tile);
         }

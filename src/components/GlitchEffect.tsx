@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 
 interface GlitchEffectProps {
@@ -14,20 +13,17 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
   useEffect(() => {
     if (!containerRef.current || !imageUrl) return;
 
-    // Reset any previous layers
     layersRef.current = [];
     if (containerRef.current) {
       containerRef.current.innerHTML = '';
     }
 
-    // Create main image
     const img = document.createElement('img');
     img.src = imageUrl;
     img.className = 'w-full h-full object-cover';
     containerRef.current.appendChild(img);
     imageRef.current = img;
 
-    // Create glitch layers
     const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff'];
     const layerCount = 5;
 
@@ -44,11 +40,9 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
       layersRef.current.push(layer);
     }
 
-    // Create geometric shapes (dots and rectangles)
     generateShapes();
     setDotsGenerated(true);
 
-    // Start animation
     let animationFrameId: number;
     const animate = () => {
       layersRef.current.forEach((layer, i) => {
@@ -60,7 +54,6 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
         layer.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         layer.style.opacity = opacity.toString();
         
-        // Add clip-path occasionally
         if (Math.sin(time * 0.2 + i) > 0.7) {
           const y1 = Math.floor(Math.random() * 100);
           const y2 = Math.floor(Math.random() * 100);
@@ -69,8 +62,7 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
           layer.style.clipPath = 'none';
         }
       });
-      
-      // Occasionally apply glitch to main image
+
       if (imageRef.current && Math.random() > 0.95) {
         const y1 = Math.floor(Math.random() * 100);
         const y2 = Math.floor(Math.random() * 100);
@@ -83,7 +75,6 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
         }, 100);
       }
 
-      // Animate dots if they exist
       if (dotsGenerated && containerRef.current) {
         const dots = containerRef.current.querySelectorAll('.floating-dot');
         dots.forEach((dot) => {
@@ -95,7 +86,6 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
           dotElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         });
 
-        // Animate rectangles
         const rects = containerRef.current.querySelectorAll('.floating-rect');
         rects.forEach((rect) => {
           const rectElement = rect as HTMLElement;
@@ -104,6 +94,17 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
           const offsetY = Math.cos(time * parseFloat(rectElement.dataset.speed || "1")) * 3;
           
           rectElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        });
+
+        const tiles = containerRef.current.querySelectorAll('.matrix-tile');
+        tiles.forEach((tile) => {
+          const tileElement = tile as HTMLElement;
+          const time = Date.now() / 1000;
+          const speed = parseFloat(tileElement.dataset.speed || "1");
+          const offsetX = Math.sin(time * speed) * 2;
+          const offsetY = Math.cos(time * speed) * 2;
+          
+          tileElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         });
       }
       
@@ -121,58 +122,43 @@ const GlitchEffect = ({ imageUrl }: GlitchEffectProps) => {
     if (!containerRef.current) return;
 
     const colors = [
-      '#ff0000', '#ff5252', '#ffcdd2', // Reds
-      '#2196f3', '#90caf9', '#bbdefb', // Blues
-      '#e0e0e0', '#bdbdbd', '#9e9e9e', // Grays
-      '#00c853', '#b2ff59', '#69f0ae', // Greens
+      '#ff0000', '#ff5252', // Primary reds
+      '#2196f3', '#90caf9', // Primary blues
+      '#e0e0e0', '#bdbdbd', // Neutral grays
+      '#00c853', '#b2ff59', // Accent greens
     ];
 
-    // Generate dots
-    for (let i = 0; i < 20; i++) {
-      const dot = document.createElement('div');
-      const size = 5 + Math.random() * 15; // Random size between 5px and 20px
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const posX = Math.random() * 100; // Random position (%)
-      const posY = Math.random() * 100;
-      const zIndex = Math.random() > 0.5 ? 1 : -1; // Random z-index (in front or behind)
-      const speed = 0.5 + Math.random() * 1.5; // Random animation speed
-      
-      dot.className = 'absolute rounded-full floating-dot';
-      dot.style.width = `${size}px`;
-      dot.style.height = `${size}px`;
-      dot.style.backgroundColor = color;
-      dot.style.left = `${posX}%`;
-      dot.style.top = `${posY}%`;
-      dot.style.zIndex = `${zIndex}`;
-      dot.style.opacity = (0.4 + Math.random() * 0.6).toString(); // Random opacity
-      dot.dataset.speed = speed.toString();
-      
-      containerRef.current.appendChild(dot);
-    }
+    const rows = 6;
+    const cols = 6;
+    const tileSize = 60; // Larger tiles
 
-    // Generate rectangles
-    for (let i = 0; i < 8; i++) {
-      const rect = document.createElement('div');
-      const width = 20 + Math.random() * 80; // Random width between 20px and 100px
-      const height = 10 + Math.random() * 40; // Random height between 10px and 50px
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      const posX = Math.random() * 100; // Random position (%)
-      const posY = Math.random() * 100;
-      const zIndex = Math.random() > 0.5 ? 1 : -1; // Random z-index (in front or behind)
-      const speed = 0.2 + Math.random() * 0.8; // Random animation speed
-      
-      rect.className = 'absolute floating-rect';
-      rect.style.width = `${width}px`;
-      rect.style.height = `${height}px`;
-      rect.style.backgroundColor = color;
-      rect.style.left = `${posX}%`;
-      rect.style.top = `${posY}%`;
-      rect.style.zIndex = `${zIndex}`;
-      rect.style.opacity = (0.1 + Math.random() * 0.4).toString(); // Random opacity
-      rect.style.mixBlendMode = 'multiply';
-      rect.dataset.speed = speed.toString();
-      
-      containerRef.current.appendChild(rect);
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const tile = document.createElement('div');
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const posX = (col / cols) * 100;
+        const posY = (row / rows) * 100;
+        const zIndex = Math.random() > 0.5 ? 1 : -1;
+        const speed = 0.2 + Math.random() * 0.4; // Slower, more subtle movement
+        
+        tile.className = 'absolute matrix-tile';
+        tile.style.width = `${tileSize}px`;
+        tile.style.height = `${tileSize}px`;
+        tile.style.backgroundColor = color;
+        tile.style.left = `${posX}%`;
+        tile.style.top = `${posY}%`;
+        tile.style.zIndex = `${zIndex}`;
+        tile.style.opacity = (0.1 + Math.random() * 0.3).toString(); // Lower opacity
+        tile.style.mixBlendMode = 'multiply';
+        tile.style.transition = 'transform 0.5s ease-out';
+        tile.dataset.speed = speed.toString();
+        
+        const isCenterX = col >= cols/3 && col < (cols*2)/3;
+        const isCenterY = row >= rows/3 && row < (rows*2)/3;
+        if (!(isCenterX && isCenterY)) {
+          containerRef.current.appendChild(tile);
+        }
+      }
     }
   };
 

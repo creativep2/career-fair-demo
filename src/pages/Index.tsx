@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -8,17 +7,16 @@ import GlitchEffect from "@/components/GlitchEffect";
 import TypographyRoom from "@/components/TypographyRoom";
 
 const Index = () => {
-  // Default test image from Unsplash
-  const defaultImage = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b";
+  // Use local image from public directory as default
+  const defaultImage = "/image.png";
   
-  const [uploadedImage, setUploadedImage] = useState<string | null>(defaultImage);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [effectGenerated, setEffectGenerated] = useState(true); // Set to true to show effects immediately
-  const [customText, setCustomText] = useState("ONE MORE ONE MORE ONE MORE ONE MORE");
+  const [effectGenerated, setEffectGenerated] = useState(false);
 
   const handleImageUpload = (imageUrl: string) => {
     setUploadedImage(imageUrl);
-    setEffectGenerated(true);
+    setEffectGenerated(false);
     toast.success("Image uploaded successfully!");
   };
 
@@ -30,56 +28,58 @@ const Index = () => {
 
     setIsGenerating(true);
     
-    // Simulate processing time
     setTimeout(() => {
       setIsGenerating(false);
       setEffectGenerated(true);
-      toast.success("Your creative effect is ready!");
+      toast.success("Your divergent reality is ready!");
     }, 1500);
   };
 
+  const handleReset = () => {
+    setUploadedImage(null);
+    setEffectGenerated(false);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#E61E2A]/5">
       {/* Header */}
-      <header className="w-full py-6 px-4 sm:px-6 border-b border-border backdrop-blur-sm bg-background/80 fixed top-0 z-50">
+      <header className="w-full py-6 px-4 sm:px-6 border-b border-[#E61E2A] backdrop-blur-sm bg-white/90 fixed top-0 z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl sm:text-3xl font-display font-bold tracking-tight">
-            Creative<span className="text-accent">Effects</span>
+          <h1 className="text-2xl sm:text-4xl font-mono font-bold tracking-tighter text-[#E61E2A]">
+            ID
           </h1>
           
           <div className="flex items-center gap-4">
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => {
-                setUploadedImage(null);
-                setEffectGenerated(false);
-              }}
+              onClick={handleReset}
+              className="border-[#E61E2A] text-[#E61E2A] hover:bg-[#E61E2A]/10"
             >
-              Reset
+              RESET
             </Button>
             <Button 
               size="sm" 
               onClick={handleGenerate}
-              disabled={!uploadedImage || isGenerating}
-              className="bg-accent hover:bg-accent/90 text-white"
+              disabled={!uploadedImage || isGenerating || effectGenerated}
+              className="bg-[#E61E2A] hover:bg-[#E61E2A]/90 text-white font-mono"
             >
-              {isGenerating ? "Generating..." : "Generate Effect"}
+              {isGenerating ? "PROCESSING..." : "TRANSCEND"}
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 pt-24 pb-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto space-y-12">
+      <main className="flex-1 pt-32 pb-16 px-4 sm:px-6 text-gray-900">
+        <div className="max-w-7xl mx-auto space-y-16">
           {/* Intro Section */}
-          <section className="text-center max-w-3xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tight">
-              Transform Your Images
+          <section className="text-center max-w-3xl mx-auto space-y-6">
+            <h2 className="text-4xl sm:text-6xl font-mono font-bold tracking-tighter text-[#E61E2A]">
+              Intellectual <span className="text-gray-900">Divergence</span>
             </h2>
-            <p className="text-muted-foreground text-lg">
-              Upload your photo and create stunning visual effects with just a click
+            <p className="text-gray-600 text-lg font-light">
+              Experience the fusion of human creativity and artificial intelligence. Upload an image and witness the transformation through AI-powered reality augmentation.
             </p>
           </section>
 
@@ -90,51 +90,93 @@ const Index = () => {
                 onImageUpload={handleImageUpload} 
                 isLoading={isGenerating}
               />
+              {uploadedImage && (
+                <div className="space-y-4">
+                  <div className="mt-4 p-4 border-2 border-[#E61E2A] rounded-lg bg-white">
+                    <p className="text-sm text-[#E61E2A] mb-2 font-mono font-bold">NEURAL BASELINE:</p>
+                    <img 
+                      src={uploadedImage} 
+                      alt="Upload preview" 
+                      className="w-full h-48 object-contain rounded-md"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-4">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleReset}
+                      className="border-[#E61E2A] text-[#E61E2A] hover:bg-[#E61E2A]/10 font-mono"
+                    >
+                      RESET
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={handleGenerate}
+                      disabled={isGenerating || effectGenerated}
+                      className="bg-[#E61E2A] hover:bg-[#E61E2A]/90 text-white font-mono min-w-[120px]"
+                    >
+                      {isGenerating ? "PROCESSING..." : "TRANSCEND"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
           {/* Effects Section */}
-          {effectGenerated && (
+          {effectGenerated && uploadedImage && (
             <section className="max-w-5xl mx-auto space-y-8">
+              <div className="flex justify-center gap-4 mb-8">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleReset}
+                  className="border-[#E61E2A] text-[#E61E2A] hover:bg-[#E61E2A]/10 font-mono"
+                >
+                  RESET
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={handleGenerate}
+                  disabled={true}
+                  className="bg-[#E61E2A]/50 text-white/50 font-mono cursor-not-allowed"
+                >
+                  TRANSCENDED
+                </Button>
+              </div>
+              
               <Tabs defaultValue="glitch" className="w-full">
                 <div className="flex justify-center mb-6">
-                  <TabsList>
-                    <TabsTrigger value="glitch">Glitch Effect</TabsTrigger>
-                    <TabsTrigger value="typography">Typography Room</TabsTrigger>
+                  <TabsList className="bg-[#E61E2A]/10">
+                    <TabsTrigger 
+                      value="glitch"
+                      className="data-[state=active]:bg-[#E61E2A] data-[state=active]:text-white"
+                    >
+                      NEURAL BREACH
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="typography"
+                      className="data-[state=active]:bg-[#E61E2A] data-[state=active]:text-white"
+                    >
+                      COGNITIVE SPACE
+                    </TabsTrigger>
                   </TabsList>
                 </div>
                 
                 <TabsContent value="glitch" className="w-full">
-                  <div className="aspect-[4/3] max-w-3xl mx-auto">
-                    <GlitchEffect imageUrl={uploadedImage!} />
+                  <div className="aspect-[4/3] max-w-[50vw] mx-auto">
+                    <GlitchEffect imageUrl={uploadedImage} colorMode="blue" />
                   </div>
                 </TabsContent>
                 
                 <TabsContent value="typography" className="w-full">
                   <div className="space-y-4">
-                    <div className="max-w-md mx-auto">
-                      <label htmlFor="customText" className="block text-sm font-medium mb-2">
-                        Customize Text (optional)
-                      </label>
-                      <input
-                        id="customText"
-                        type="text"
-                        value={customText}
-                        onChange={(e) => setCustomText(e.target.value)}
-                        className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
-                        placeholder="Enter custom text for the walls"
-                      />
-                    </div>
-                    
                     <div className="aspect-square max-w-3xl mx-auto">
-                      <TypographyRoom 
-                        imageUrl={uploadedImage!} 
-                        text={customText}
-                      />
+                      <TypographyRoom imageUrl={uploadedImage} />
                     </div>
                     
-                    <p className="text-center text-sm text-muted-foreground">
-                      Move your mouse to change perspective. Scroll to zoom in/out.
+                    <p className="text-center text-sm text-gray-600 font-mono">
+                      NAVIGATE THE VOID: MOVE TO SHIFT PERSPECTIVE / SCROLL TO TRAVERSE REALITIES
                     </p>
                   </div>
                 </TabsContent>
@@ -145,33 +187,33 @@ const Index = () => {
           {/* Instructions */}
           <section className="max-w-3xl mx-auto py-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-secondary/50 rounded-lg p-6 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-accent font-bold">1</span>
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#E61E2A]/20">
+                <div className="w-12 h-12 bg-[#E61E2A] rounded-full flex items-center justify-center mb-4">
+                  <span className="text-white font-mono font-bold">01</span>
                 </div>
-                <h3 className="text-lg font-medium mb-2">Upload Image</h3>
-                <p className="text-muted-foreground text-sm">
-                  Drag and drop or browse to upload your favorite photo to transform
+                <h3 className="text-lg font-medium mb-2 font-mono text-[#E61E2A]">Neural Input</h3>
+                <p className="text-gray-600 text-sm">
+                  Submit your visual data to our AI system for cognitive enhancement
                 </p>
               </div>
               
-              <div className="bg-secondary/50 rounded-lg p-6 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-accent font-bold">2</span>
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#E61E2A]/20">
+                <div className="w-12 h-12 bg-[#E61E2A] rounded-full flex items-center justify-center mb-4">
+                  <span className="text-white font-mono font-bold">02</span>
                 </div>
-                <h3 className="text-lg font-medium mb-2">Generate Effect</h3>
-                <p className="text-muted-foreground text-sm">
-                  Click the generate button and watch as your image transforms
+                <h3 className="text-lg font-medium mb-2 font-mono text-[#E61E2A]">AI Processing</h3>
+                <p className="text-gray-600 text-sm">
+                  Watch as artificial intelligence transforms your input into new intellectual dimensions
                 </p>
               </div>
               
-              <div className="bg-secondary/50 rounded-lg p-6 backdrop-blur-sm">
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                  <span className="text-accent font-bold">3</span>
+              <div className="bg-white rounded-lg p-6 shadow-lg border border-[#E61E2A]/20">
+                <div className="w-12 h-12 bg-[#E61E2A] rounded-full flex items-center justify-center mb-4">
+                  <span className="text-white font-mono font-bold">03</span>
                 </div>
-                <h3 className="text-lg font-medium mb-2">Explore Effects</h3>
-                <p className="text-muted-foreground text-sm">
-                  Switch between different effects and customize to create your perfect visual
+                <h3 className="text-lg font-medium mb-2 font-mono text-[#E61E2A]">Cognitive Expansion</h3>
+                <p className="text-gray-600 text-sm">
+                  Experience the breakthrough as AI amplifies your creative potential
                 </p>
               </div>
             </div>
@@ -180,9 +222,9 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-secondary/50 backdrop-blur-sm border-t border-border py-6 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto text-center text-sm text-muted-foreground">
-          <p>Created with creativity and code</p>
+      <footer className="bg-white backdrop-blur-sm border-t border-[#E61E2A] py-6 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto text-center text-sm text-[#E61E2A] font-mono">
+          <p>ID - INTELLECTUAL DIVERGENCE SYSTEM V1.0</p>
         </div>
       </footer>
     </div>

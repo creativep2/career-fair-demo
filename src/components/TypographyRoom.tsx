@@ -1,21 +1,19 @@
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMouse } from "@/hooks/use-mouse";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TypographyRoomProps {
   imageUrl: string;
-  text?: string;
 }
 
 const TypographyRoom = ({ 
-  imageUrl,
-  text = "ONE MORE ONE MORE ONE MORE ONE MORE" 
+  imageUrl
 }: TypographyRoomProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const mouse = useMouse();
   const isMobile = useIsMobile();
+  const [zoom, setZoom] = useState(1);
   
   useEffect(() => {
     if (!containerRef.current || !sceneRef.current) return;
@@ -33,122 +31,416 @@ const TypographyRoom = ({
       const mouseY = ((mouse.y - centerY) / (rect.height / 2)) * (isMobile ? 0.5 : 1);
       
       // Apply rotation based on mouse position
-      const rotateX = mouseY * -10; // Invert Y axis for natural movement
-      const rotateY = mouseX * 10;
+      const rotateX = mouseY * -8; 
+      const rotateY = mouseX * 8;
       
       sceneRef.current.style.transform = `
-        perspective(1000px)
+        perspective(1200px)
         rotateX(${rotateX}deg)
         rotateY(${rotateY}deg)
+        scale(${zoom})
       `;
     };
     
-    const handleScroll = () => {
-      if (!sceneRef.current) return;
-      
-      // Get scroll amount as percentage of document height
-      const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-      
-      // Scale the room based on scroll (zoom effect)
-      const scale = 1 + scrollPercent * 0.5;
-      sceneRef.current.style.scale = scale.toString();
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      // Adjust zoom based on wheel direction with smaller increments for smoother zooming
+      const zoomDelta = e.deltaY > 0 ? -0.03 : 0.03;
+      // Allow much further zoom out (from 0.1 to 2)
+      const newZoom = Math.max(0.1, Math.min(2, zoom + zoomDelta));
+      setZoom(newZoom);
     };
     
     // Update on mouse move
     updatePerspective();
     window.addEventListener('mousemove', updatePerspective);
-    window.addEventListener('scroll', handleScroll);
+    containerRef.current.addEventListener('wheel', handleWheel, { passive: false });
     
     return () => {
       window.removeEventListener('mousemove', updatePerspective);
-      window.removeEventListener('scroll', handleScroll);
+      containerRef.current?.removeEventListener('wheel', handleWheel);
     };
-  }, [mouse, isMobile]);
+  }, [mouse, isMobile, zoom]);
   
-  // Split text into words for walls
-  const words = text.split(' ');
+  // Determine which corridor to show based on zoom level
+  const getCorridorLayer = () => {
+    if (zoom <= 0.2) {
+      return 6; // INFINITE
+    } else if (zoom <= 0.4) {
+      return 5; // BEYOND
+    } else if (zoom <= 0.6) {
+      return 4; // DEEPER
+    } else if (zoom <= 0.8) {
+      return 3; // HARD MODE
+    } else if (zoom <= 1.2) {
+      return 2; // RULES HAVE CHANGED
+    } else if (zoom <= 1.5) {
+      return 1; // START THE NEW GAME
+    }
+    return 0; // Default ONE MORE corridor
+  };
+  
+  const corridorLayer = getCorridorLayer();
+  
+  // Generate grid lines for floor and ceiling
+  const generateGridLines = (count: number) => {
+    const lines = [];
+    const spacing = 100 / count;
+    
+    for (let i = 0; i <= count; i++) {
+      const position = i * spacing;
+      // Horizontal lines (going into z-depth)
+      lines.push(
+        <div 
+          key={`h-${i}`} 
+          className="absolute h-[1px] bg-white/30 w-full"
+          style={{ top: `${position}%`, transform: 'translateZ(0)' }}
+        />
+      );
+      
+      // Vertical lines
+      lines.push(
+        <div 
+          key={`v-${i}`} 
+          className="absolute w-[1px] bg-white/30 h-full"
+          style={{ left: `${position}%`, transform: 'translateZ(0)' }}
+        />
+      );
+    }
+    
+    // Removed diagonal perspective lines
+    
+    return lines;
+  };
   
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden rounded-lg"
+      className="relative w-full h-full overflow-hidden rounded-lg bg-[#000054]"
     >
       <div 
         ref={sceneRef}
         className="relative w-full h-full transition-transform duration-300 ease-out"
         style={{ transformStyle: 'preserve-3d' }}
       >
-        {/* Center Image */}
+        {/* Background Image */}
         <div
           className="absolute inset-0 flex items-center justify-center"
-          style={{ transform: 'translateZ(0)' }}
+          style={{ 
+            transform: 'translateZ(-650px)',
+            width: '100%',
+            height: '100%',
+            overflow: 'visible'
+          }}
         >
-          <div className="w-[50%] h-[50%] relative">
-            <img 
-              src={imageUrl}
-              alt="User"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <img 
+            src={imageUrl}
+            alt="Background"
+            className="max-w-none w-auto h-auto"
+            style={{
+              transform: 'scale(1)',
+              imageRendering: 'crisp-edges'
+            }}
+          />
         </div>
         
-        {/* Walls with typography */}
-        {/* Front wall */}
-        <div
-          className="absolute inset-0 flex items-end justify-center overflow-hidden"
-          style={{ transform: 'translateZ(-200px) rotateX(90deg)', transformOrigin: 'bottom' }}
+        {/* Enhanced 3D Floor */}
+        {/* <div
+          className="absolute bottom-0 left-0 w-[300%] h-[150%] overflow-hidden"
+          style={{ 
+            transform: 'rotateX(90deg) translateZ(-320px) translateY(50%) translateX(-33%)', 
+            transformOrigin: 'center bottom',
+            perspective: '2000px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+          }}
         >
-          <div className="text-[5vw] font-bold tracking-tighter text-accent whitespace-nowrap">
-            {words[0] || "ONE"}
+          <div className="relative w-full h-full">
+            {generateGridLines(30)}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#000054] to-transparent opacity-70"></div>
+          </div>
+        </div> */}
+        
+        
+        {/* Enhanced 3D Ceiling */}
+        {/* <div
+          className="absolute top-0 left-0 w-[300%] h-[150%] overflow-hidden"
+          style={{ 
+            transform: 'rotateX(-90deg) translateZ(-320px) translateY(-50%) translateX(-33%)', 
+            transformOrigin: 'center top',
+            perspective: '2000px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+          }}
+        >
+          <div className="relative w-full h-full">
+            {generateGridLines(30)}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#000054] to-transparent opacity-70"></div>
           </div>
         </div>
-        
-        {/* Back wall */}
-        <div
-          className="absolute inset-0 flex items-start justify-center overflow-hidden"
-          style={{ transform: 'translateZ(-200px) rotateX(-90deg)', transformOrigin: 'top' }}
+         */}
+        {/* Enhanced 3D Left Wall - Layer 1 (Closest) */}
+        {/* <div
+          className="absolute top-0 left-0 h-[300%] w-[150%] overflow-hidden"
+          style={{ 
+            transform: 'rotateY(90deg) translateZ(-75px) translateX(-50%) translateY(-33%)', 
+            transformOrigin: 'left center',
+            perspective: '2000px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+          }}
         >
-          <div className="text-[5vw] font-bold tracking-tighter text-accent whitespace-nowrap">
-            {words[1] || "MORE"}
+          <div className="relative w-full h-full">
+            {generateGridLines(30)}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#000054] to-transparent opacity-70"></div>
           </div>
         </div>
-        
-        {/* Left wall */}
-        <div
-          className="absolute inset-0 flex items-center justify-start overflow-hidden"
-          style={{ transform: 'translateZ(-200px) rotateY(-90deg)', transformOrigin: 'left' }}
+         */}
+        {/* Enhanced 3D Right Wall - Layer 1 (Closest) */}
+        {/* <div
+          className="absolute top-0 right-0 h-[300%] w-[150%] overflow-hidden"
+          style={{ 
+            transform: 'rotateY(-90deg) translateZ(-75px) translateX(50%) translateY(-33%)', 
+            transformOrigin: 'right center',
+            perspective: '2000px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+          }}
         >
-          <div 
-            className="text-[5vw] font-bold tracking-tighter text-accent whitespace-nowrap"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+          <div className="relative w-full h-full">
+            {generateGridLines(30)}
+            <div className="absolute inset-0 bg-gradient-to-l from-[#000054] to-transparent opacity-70"></div>
+          </div>
+        </div> */}
+        
+        {/* Layer 1 - START THE NEW GAME */}
+        {corridorLayer >= 1 && (
+          <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-250px)' }}>
+            {/* Top wall */}
+            <div
+              className="absolute top-0 left-0 w-full h-[40%] flex items-center justify-center"
+              style={{ transform: 'rotateX(-90deg) translateZ(-320px) translateY(-0%)', transformOrigin: 'center top' }}
+            >
+              <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+                START THE <br /> NEW GAME
+              </div>
+            </div>
+            
+            {/* Bottom wall */}
+            <div
+              className="absolute bottom-0 left-0 w-full h-[40%] flex items-center justify-center "
+              style={{ transform: 'rotateX(90deg) translateZ(-320px) translateY(0%)', transformOrigin: 'center bottom' }}
+            >
+              <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+                START THE <br /> NEW GAME
+              </div>
+            </div>
+            
+            {/* Left wall */}
+            <div
+              className="absolute top-0 left-0 h-full w-[30%] flex items-center justify-center"
+              style={{ transform: 'rotateY(90deg) translateZ(-150px) translateX(-0%)', transformOrigin: 'left center' }}
+            >
+              <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                   style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                HARDMODE <br /> HARDMODE 
+              </div>
+            </div>
+            
+            {/* Right wall */}
+            <div
+              className="absolute top-0 right-0 h-full w-[30%] flex items-center justify-center"
+              style={{ transform: 'rotateY(-90deg) translateZ(-150px) translateX(0%)', transformOrigin: 'right center' }}
+            >
+              <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                   style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                HARDMODE <br /> HARDMODE
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Layer 2 - RULES HAVE CHANGED */}
+        {corridorLayer >= 2 && (
+          <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-250px)' }}>
+            {/* Top wall */}
+            <div
+              className="absolute top-0 left-0 w-full h-[40%] flex items-center justify-center"
+              style={{ transform: 'rotateX(-90deg) translateZ(-320px) translateY(-110%)', transformOrigin: 'center top' }}
+            >
+              <div className="text-[5vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+                RULES HAVE CHANGED <br /> RULES HAVE CHANGED <br /> RULES HAVE CHANGED
+              </div>
+            </div>
+            
+            {/* Bottom wall */}
+            <div
+              className="absolute bottom-0 left-0 w-full h-[40%] flex items-center justify-center "
+              style={{ transform: 'rotateX(90deg) translateZ(-320px) translateY(110%)', transformOrigin: 'center bottom' }}
+            >
+              <div className="text-[5vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+                RULES HAVE CHANGED <br /> RULES HAVE CHANGED <br /> RULES HAVE CHANGED
+              </div>
+            </div>
+            
+            {/* Left wall */}
+            <div
+              className="absolute top-0 left-0 h-full w-[30%] flex items-center justify-center"
+              style={{ transform: 'rotateY(90deg) translateZ(-150px) translateX(-150%)', transformOrigin: 'left center' }}
+            >
+              <div className="text-[12vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                   style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                NEW BOSSES
+              </div>
+            </div>
+            
+            {/* Right wall */}
+            <div
+              className="absolute top-0 right-0 h-full w-[30%] flex items-center justify-center"
+              style={{ transform: 'rotateY(-90deg) translateZ(-150px) translateX(150%)', transformOrigin: 'right center' }}
+            >
+              <div className="text-[12vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                   style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+                NEW BOSSES  
+              </div>
+            </div>
+          </div>
+      )}
+
+      {corridorLayer >= 1 && (
+        <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-250px)' }}>
+          {/* Top wall */}
+          <div
+            className="absolute top-0 left-0 w-full h-[40%] flex items-center justify-center"
+            style={{ transform: 'rotateX(-90deg) translateZ(-320px) translateY(-220%)', transformOrigin: 'center top' }}
           >
-            {words[2] || "ONE"}
+            <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              START THE <br /> NEW GAME
+            </div>
           </div>
-        </div>
-        
-        {/* Right wall */}
-        <div
-          className="absolute inset-0 flex items-center justify-end overflow-hidden"
-          style={{ transform: 'translateZ(-200px) rotateY(90deg)', transformOrigin: 'right' }}
-        >
-          <div 
-            className="text-[5vw] font-bold tracking-tighter text-accent whitespace-nowrap"
-            style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+          
+          {/* Bottom wall */}
+          <div
+            className="absolute bottom-0 left-0 w-full h-[40%] flex items-center justify-center "
+            style={{ transform: 'rotateX(90deg) translateZ(-320px) translateY(220%)', transformOrigin: 'center bottom' }}
           >
-            {words[3] || "MORE"}
+            <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              START THE <br /> NEW GAME
+            </div>
+          </div>
+          
+          {/* Left wall */}
+          <div
+            className="absolute top-0 left-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(90deg) translateZ(-150px) translateX(-290%)', transformOrigin: 'left center' }}
+          >
+            <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              HARDMODE <br /> HARDMODE 
+            </div>
+          </div>
+          
+          {/* Right wall */}
+          <div
+            className="absolute top-0 right-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(-90deg) translateZ(-150px) translateX(290%)', transformOrigin: 'right center' }}
+          >
+            <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none "
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              HARDMODE <br /> HARDMODE
+            </div>
           </div>
         </div>
-        
-        {/* Floor with additional typography */}
-        <div
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ transform: 'translateZ(-200px)' }}
-        >
-          <div className="text-[2vw] font-bold tracking-tighter text-accent opacity-50 rotate-45">
-            2023
+      )}  
+
+      {/* Layer 2 - RULES HAVE CHANGED */}
+      {corridorLayer >= 2 && (
+        <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-250px)' }}>
+          {/* Top wall */}
+          <div
+            className="absolute top-0 left-0 w-full h-[40%] flex items-center justify-center"
+            style={{ transform: 'rotateX(-90deg) translateZ(-320px) translateY(-330%)', transformOrigin: 'center top' }}
+          >
+            <div className="text-[5vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              RULES HAVE CHANGED <br /> RULES HAVE CHANGED <br /> RULES HAVE CHANGED
+            </div>
+          </div>
+          
+          {/* Bottom wall */}
+          <div
+            className="absolute bottom-0 left-0 w-full h-[40%] flex items-center justify-center "
+            style={{ transform: 'rotateX(90deg) translateZ(-320px) translateY(330%)', transformOrigin: 'center bottom' }}
+          >
+            <div className="text-[5vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              RULES HAVE CHANGED <br /> RULES HAVE CHANGED <br /> RULES HAVE CHANGED
+            </div>
+          </div>
+          
+          {/* Left wall */}
+          <div
+            className="absolute top-0 left-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(90deg) translateZ(-150px) translateX(-450%)', transformOrigin: 'left center' }}
+          >
+            <div className="text-[12vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              NEW BOSSES
+            </div>
+          </div>
+          
+          {/* Right wall */}
+          <div
+            className="absolute top-0 right-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(-90deg) translateZ(-150px) translateX(450%)', transformOrigin: 'right center' }}
+          >
+            <div className="text-[12vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              NEW BOSSES  
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {corridorLayer >= 1 && (
+        <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d', transform: 'translateZ(-250px)' }}>
+          {/* Top wall */}
+          <div
+            className="absolute top-0 left-0 w-full h-[40%] flex items-center justify-center"
+            style={{ transform: 'rotateX(-90deg) translateZ(-320px) translateY(-440%)', transformOrigin: 'center top' }}
+          >
+            <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              START THE <br /> NEW GAME
+            </div>
+          </div>
+          
+          {/* Bottom wall */}
+          <div
+            className="absolute bottom-0 left-0 w-full h-[40%] flex items-center justify-center "
+            style={{ transform: 'rotateX(90deg) translateZ(-320px) translateY(440%)', transformOrigin: 'center bottom' }}
+          >
+            <div className="text-[11vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none">
+              START THE <br /> NEW GAME
+            </div>
+          </div>
+          
+          {/* Left wall */}
+          <div
+            className="absolute top-0 left-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(90deg) translateZ(-150px) translateX(-590%)', transformOrigin: 'left center' }}
+          >
+            <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none"
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              HARDMODE <br /> HARDMODE 
+            </div>
+          </div>
+          
+          {/* Right wall */}
+          <div
+            className="absolute top-0 right-0 h-full w-[30%] flex items-center justify-center"
+            style={{ transform: 'rotateY(-90deg) translateZ(-150px) translateX(590%)', transformOrigin: 'right center' }}
+          >
+            <div className="text-[13vw] font-bold tracking-tighter text-white whitespace-nowrap leading-none "
+                  style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
+              HARDMODE <br /> HARDMODE
+            </div>
+          </div>
+        </div>
+      )}  
+    </div>
     </div>
   );
 };

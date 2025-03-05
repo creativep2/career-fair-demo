@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -40,12 +39,12 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
 
   const processFile = (file: File) => {
     if (!file.type.match('image.*')) {
-      toast.error("Please select an image file");
+      toast.error("ERROR: INVALID REALITY FORMAT");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) { // 5MB
-      toast.error("File is too large. Please select an image smaller than 5MB");
+      toast.error("ERROR: REALITY TOO DENSE (MAX 5MB)");
       return;
     }
 
@@ -68,14 +67,17 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
         className={`
           border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
           transition-all duration-300 ease-in-out
-          ${isDragging ? 'border-accent bg-accent/5' : 'border-border'}
-          hover:border-accent hover:bg-accent/5
+          ${isDragging ? 'border-[#E61E2A] bg-[#E61E2A]/10' : 'border-[#E61E2A]/20'}
+          hover:border-[#E61E2A] hover:bg-[#E61E2A]/10
+          bg-black/50 backdrop-blur-sm
         `}
       >
         <div className="flex flex-col items-center justify-center space-y-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-12 w-12 text-muted-foreground"
+            className={`h-12 w-12 transition-colors duration-300 ${
+              isDragging ? 'text-[#E61E2A]' : 'text-gray-400'
+            }`}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -88,11 +90,11 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
             />
           </svg>
           <div>
-            <p className="text-base font-medium text-foreground">
-              Drag and drop your image here
+            <p className="text-base font-mono font-medium text-white">
+              INJECT REALITY FRAGMENT
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Or click to browse (JPG, PNG, up to 5MB)
+            <p className="mt-1 text-sm text-gray-400 font-mono">
+              ACCEPTED FORMATS: JPG, PNG / MAX DENSITY: 5MB
             </p>
           </div>
         </div>
@@ -103,10 +105,11 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
         onChange={handleFileSelect}
         accept="image/*"
         className="hidden"
+        aria-label="Upload image"
       />
-      <div className="relative h-4 overflow-hidden mt-4 rounded-full bg-secondary">
+      <div className="relative h-4 overflow-hidden mt-4 rounded-full bg-black/50 border border-[#E61E2A]/20">
         {isLoading && (
-          <div className="absolute inset-0 w-1/2 bg-accent animate-[progress-bar_1.5s_ease-in-out_infinite]"></div>
+          <div className="absolute inset-0 w-1/2 bg-[#E61E2A] animate-[progress-bar_1.5s_ease-in-out_infinite]"></div>
         )}
       </div>
     </div>

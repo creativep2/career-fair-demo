@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Brain outline -->
+  <path d="M16 4C19.5 4 22 6 24 8C26 10 27 12.5 27 15C27 17.5 26 20 24 22C22 24 19.5 26 16 26C12.5 26 10 24 8 22C6 20 5 17.5 5 15C5 12.5 6 10 8 8C10 6 12.5 4 16 4Z" 
+    stroke="#E61E2A" 
+    stroke-width="2" 
+    fill="white"
+  />
+  
+  <!-- Circuit paths -->
+  <path d="M16 8V12M16 20V24M12 15H8M24 15H20" 
+    stroke="#E61E2A" 
+    stroke-width="1.5"
+  />
+  
+  <!-- Neural nodes -->
+  <circle cx="16" cy="12" r="2" fill="#E61E2A"/>
+  <circle cx="16" cy="20" r="2" fill="#E61E2A"/>
+  <circle cx="20" cy="15" r="2" fill="#E61E2A"/>
+  <circle cx="12" cy="15" r="2" fill="#E61E2A"/>
+  
+  <!-- Center node -->
+  <circle cx="16" cy="15" r="3" fill="#E61E2A"/>
+</svg> 

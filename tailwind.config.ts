@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -62,6 +61,11 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				rmit: {
+					red: '#E61E2A',
+					blue: '#0a0a45',
+					darkblue: '#000034',
 				}
 			},
 			fontFamily: {
@@ -108,6 +112,11 @@ export default {
 				'rotate-slow': {
 					'0%': { transform: 'rotate(0deg)' },
 					'100%': { transform: 'rotate(360deg)' }
+				},
+				'progress-bar': {
+					'0%': { transform: 'translateX(-100%)' },
+					'50%': { transform: 'translateX(0%)' },
+					'100%': { transform: 'translateX(100%)' }
 				}
 			},
 			animation: {
@@ -117,7 +126,8 @@ export default {
 				'glitch-v': 'glitch-vertical 0.2s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
 				'fade-in': 'fade-in 0.5s ease-out',
-				'rotate-slow': 'rotate-slow 20s linear infinite'
+				'rotate-slow': 'rotate-slow 20s linear infinite',
+				'progress-bar': 'progress-bar 1.5s ease-in-out infinite'
 			}
 		}
 	},

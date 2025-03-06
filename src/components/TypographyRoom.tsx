@@ -13,7 +13,7 @@ const TypographyRoom = ({
   const sceneRef = useRef<HTMLDivElement>(null);
   const mouse = useMouse();
   const isMobile = useIsMobile();
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.6);
   
   useEffect(() => {
     if (!containerRef.current || !sceneRef.current) return;
@@ -116,7 +116,7 @@ const TypographyRoom = ({
   return (
     <div 
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden rounded-lg bg-[#000054]"
+      className="relative w-full h-full overflow-hidden rounded-lg bg-[#E61E2A]"
     >
       <div 
         ref={sceneRef}
@@ -151,12 +151,12 @@ const TypographyRoom = ({
             transform: 'rotateX(90deg) translateZ(-320px) translateY(50%) translateX(-33%)', 
             transformOrigin: 'center bottom',
             perspective: '2000px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            backgroundColor: 'rgba(230, 30, 42, 0.1)'
           }}
         >
           <div className="relative w-full h-full">
             {generateGridLines(30)}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#000054] to-transparent opacity-70"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#E61E2A] to-transparent opacity-70"></div>
           </div>
         </div> */}
         
@@ -168,12 +168,12 @@ const TypographyRoom = ({
             transform: 'rotateX(-90deg) translateZ(-320px) translateY(-50%) translateX(-33%)', 
             transformOrigin: 'center top',
             perspective: '2000px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            backgroundColor: 'rgba(230, 30, 42, 0.1)'
           }}
         >
           <div className="relative w-full h-full">
             {generateGridLines(30)}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#000054] to-transparent opacity-70"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#E61E2A] to-transparent opacity-70"></div>
           </div>
         </div>
          */}
@@ -184,12 +184,12 @@ const TypographyRoom = ({
             transform: 'rotateY(90deg) translateZ(-75px) translateX(-50%) translateY(-33%)', 
             transformOrigin: 'left center',
             perspective: '2000px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            backgroundColor: 'rgba(230, 30, 42, 0.1)'
           }}
         >
           <div className="relative w-full h-full">
             {generateGridLines(30)}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#000054] to-transparent opacity-70"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#E61E2A] to-transparent opacity-70"></div>
           </div>
         </div>
          */}
@@ -200,12 +200,12 @@ const TypographyRoom = ({
             transform: 'rotateY(-90deg) translateZ(-75px) translateX(50%) translateY(-33%)', 
             transformOrigin: 'right center',
             perspective: '2000px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+            backgroundColor: 'rgba(230, 30, 42, 0.1)'
           }}
         >
           <div className="relative w-full h-full">
             {generateGridLines(30)}
-            <div className="absolute inset-0 bg-gradient-to-l from-[#000054] to-transparent opacity-70"></div>
+            <div className="absolute inset-0 bg-gradient-to-l from-[#E61E2A] to-transparent opacity-70"></div>
           </div>
         </div> */}
         

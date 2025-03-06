@@ -67,16 +67,16 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
         className={`
           border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
           transition-all duration-300 ease-in-out
-          ${isDragging ? 'border-[#E61E2A] bg-[#E61E2A]/10' : 'border-[#E61E2A]/20'}
-          hover:border-[#E61E2A] hover:bg-[#E61E2A]/10
-          bg-black/50 backdrop-blur-sm
+          ${isDragging ? 'border-rmit-red bg-rmit-red/10' : 'border-rmit-red/20'}
+          hover:border-rmit-red hover:bg-rmit-red/10
+          bg-rmit-darkblue/50 backdrop-blur-sm
         `}
       >
         <div className="flex flex-col items-center justify-center space-y-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={`h-12 w-12 transition-colors duration-300 ${
-              isDragging ? 'text-[#E61E2A]' : 'text-gray-400'
+              isDragging ? 'text-rmit-red' : 'text-gray-400'
             }`}
             fill="none"
             viewBox="0 0 24 24"
@@ -90,11 +90,11 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
             />
           </svg>
           <div>
-            <p className="text-base font-mono font-medium text-white">
-              INJECT REALITY FRAGMENT
+            <p className="text-base font-medium text-white">
+              UPLOAD IMAGE
             </p>
-            <p className="mt-1 text-sm text-gray-400 font-mono">
-              ACCEPTED FORMATS: JPG, PNG / MAX DENSITY: 5MB
+            <p className="mt-1 text-sm text-gray-400">
+              ACCEPTED FORMATS: JPG, PNG / MAX SIZE: 5MB
             </p>
           </div>
         </div>
@@ -107,9 +107,9 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
         className="hidden"
         aria-label="Upload image"
       />
-      <div className="relative h-4 overflow-hidden mt-4 rounded-full bg-black/50 border border-[#E61E2A]/20">
+      <div className="relative h-4 overflow-hidden mt-4 rounded-full bg-rmit-darkblue/50 border border-rmit-red/20">
         {isLoading && (
-          <div className="absolute inset-0 w-1/2 bg-[#E61E2A] animate-[progress-bar_1.5s_ease-in-out_infinite]"></div>
+          <div className="absolute inset-0 w-1/2 bg-rmit-red animate-progress-bar"></div>
         )}
       </div>
     </div>

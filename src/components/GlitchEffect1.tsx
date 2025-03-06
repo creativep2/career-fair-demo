@@ -31,10 +31,10 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
     const background = document.createElement('div');
     background.className = 'absolute inset-0';
     background.style.background = colorMode === 'blue' 
-      ? 'linear-gradient(to right, #000054 0%, #000075 50%, #000054 100%)'
+      ? 'linear-gradient(to right, #E61E2A 0%, #FF3A46 50%, #E61E2A 100%)'
       : colorMode === 'red'
-        ? 'linear-gradient(to right, #3a0a0a 0%, #5a1a1a 50%, #3a0a0a 100%)'
-        : 'linear-gradient(to right, #000054 0%, #000075 50%, #000054 100%)';
+        ? 'linear-gradient(to right, #E61E2A 0%, #FF3A46 50%, #E61E2A 100%)'
+        : 'linear-gradient(to right, #E61E2A 0%, #FF3A46 50%, #E61E2A 100%)';
     background.style.zIndex = '0';
     containerRef.current.appendChild(background);
 
@@ -67,35 +67,35 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
       const fragments: Fragment[] = [
         // Overlay images without effects
         { 
-          left: '63.44%',
-          top: '3.78%',
-          width: '16.67%',
-          height: '22.22%',
-          zIndex: 15,
-          image: '/red1.png',
-          bgPos: 'center',
-          scale: 1,
-          animate: true
-        },
-        { 
-          left: '55.44%',
+          left: '53.44%',
           top: '25.78%',
-          width: '30.67%',
-          height: '52.22%',
+          width: '36.67%',
+          height: '32.22%',
           zIndex: 15,
-          image: '/img.png',
+          image: '/disimg2.png',
           bgPos: 'center',
           scale: 1,
           animate: true
         },
         { 
           left: '20.44%',
-          top: '73.78%',
-          width: '16.67%',
-          height: '15.22%',
-          zIndex: 13,
+          top: '50.78%',
+          width: '35.67%',
+          height: '52.22%',
+          zIndex: 15,
+          image: '/blueimg.png',
+          bgPos: 'center',
           scale: 1,
-          image: '/red2.png',
+          animate: true
+        },
+        { 
+          left: '50.44%',
+          top: '53.78%',
+          width: '30.67%',
+          height: '30.22%',
+          zIndex: 20,
+          scale: 1,
+          image: '/redimg.png',
           bgPos: 'center',
           animate: true
         },
@@ -121,7 +121,7 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
         },
         {
           left: '60.44%',
-          top: '72.78%',
+          top: '75.78%',
           width: '18.67%',
           height: '30.22%',
           bgPos: 'center',
@@ -131,25 +131,14 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
           animate: true
         },
         {
-          left: '15.44%',
+          left: '12.44%',
           top: '5.78%',
           width: '25.67%',
           height: '22.22%',
           bgPos: 'center',
           zIndex: 16,
           scale: 1,
-          image: '/yellow.png',
-          animate: true
-        },
-        {
-          left: '15.44%',
-          top: '45.78%',
-          width: '29.67%',
-          height: '22.22%',
-          bgPos: 'center',
-          zIndex: 16,
-          scale: 1,
-          image: '/blueimg.png',
+          image: '/blue2.png',
           animate: true
         }
       ];
@@ -224,7 +213,7 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
           block.style.width = `${width}%`;
           block.style.height = `${height}%`;
           
-          block.style.backgroundColor = '#000054';
+          block.style.backgroundColor = '#E61E2A';
           block.style.zIndex = '5';
 
           // Reduce the animation probability for denser grid
@@ -310,7 +299,7 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
         element.style.top = block.top;
         element.style.width = block.width;
         element.style.height = block.height;
-        element.style.backgroundColor = '#000054';
+        element.style.backgroundColor = '#E61E2A';
         element.style.zIndex = block.zIndex;
         element.style.animation = `blockFlicker 0.6s infinite ${block.animationDelay}`;
         containerRef.current?.appendChild(element);
@@ -324,7 +313,7 @@ const GlitchEffect = ({ imageUrl = process.env.PUBLIC_URL + '/image.png', colorM
         element.style.top = block.top;
         element.style.width = block.width;
         element.style.height = block.height;
-        element.style.backgroundColor = '#000054';
+        element.style.backgroundColor = '#E61E2A';
         element.style.zIndex = '15';
         const delay = Math.random() * 3;
         element.style.animation = `blockFlicker 0.8s infinite ${delay}s`;

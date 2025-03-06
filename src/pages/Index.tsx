@@ -96,11 +96,6 @@ const Index = () => {
             <h2 className="text-4xl sm:text-6xl font-bold tracking-tighter text-white">
               Careers Festival <span className="text-rmit-red">2025</span>
             </h2>
-            <div className="text-rmit-red text-8xl font-bold tracking-tighter">
-              INTELLECTUAL
-              <br />
-              <span className="text-white">DIVERGENCE</span>
-            </div>
           </section>
 
           {/* Upload Section */}
@@ -172,13 +167,13 @@ const Index = () => {
                       value="glitch"
                       className="data-[state=active]:bg-rmit-red data-[state=active]:text-white"
                     >
-                      NEURAL BREACH
+                      Intellectual Divergence
                     </TabsTrigger>
                     <TabsTrigger 
                       value="typography"
                       className="data-[state=active]:bg-rmit-red data-[state=active]:text-white"
                     >
-                      COGNITIVE SPACE
+                      Hard Mode
                     </TabsTrigger>
                   </TabsList>
                 </div>

@@ -107,11 +107,6 @@ const ImageUploader = ({ onImageUpload, isLoading }: ImageUploaderProps) => {
         className="hidden"
         aria-label="Upload image"
       />
-      <div className="relative h-4 overflow-hidden mt-4 rounded-full bg-rmit-darkblue/50 border border-rmit-red/20">
-        {isLoading && (
-          <div className="absolute inset-0 w-1/2 bg-rmit-red animate-progress-bar"></div>
-        )}
-      </div>
     </div>
   );
 };
